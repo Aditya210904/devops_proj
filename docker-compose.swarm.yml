@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web-app:
+    image: ghcr.io/aditya210904/devops_proj:latest
+    ports:
+      - "8080:80"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: overlay
