@@ -50,6 +50,13 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Pull Docker Image
+      run: |
+        echo "Pulling latest image..."
+        docker pull ghcr.io/aditya210904/devops_proj:latest
+        echo "Image pulled successfully"
+        docker images | Select-String "ghcr.io/aditya210904/devops_proj"
+    
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
@@ -64,7 +71,17 @@ jobs:
     - name: Verify deployment
       run: |
         echo "Waiting for container to start..."
-        Start-Sleep -Seconds 5
-        docker ps --filter "name=my-web-app"
-        echo "Container logs:"
-        docker logs my-web-app --tail 10
+        Start-Sleep -Seconds 10
+        echo "All running containers:"
+        docker ps -a
+        echo "Containers with 'web' in name:"
+        docker ps -a --filter "name=web"
+        echo "Checking if my-web-app container exists:"
+        if (docker ps -a --filter "name=my-web-app" --format "table {{.Names}}" | Select-String "my-web-app") {
+          echo "Container found, checking logs:"
+          docker logs my-web-app --tail 20
+        } else {
+          echo "Container 'my-web-app' not found"
+          echo "Available containers:"
+          docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+        }

@@ -6,7 +6,7 @@ resource "docker_image" "app_image" {
 
 resource "docker_container" "app_container" {
   name  = "my-web-app"
-  image = docker_image.app_image.image_id
+  image = docker_image.app_image.name
   
   ports {
     internal = 80
