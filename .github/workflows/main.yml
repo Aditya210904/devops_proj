@@ -52,8 +52,11 @@ jobs:
     
     - name: Initialize Docker Swarm
       run: |
-        docker swarm leave --force 2>$null || echo "Not in swarm mode"
-        docker swarm init --advertise-addr 127.0.0.1
+        docker service rm my-local-app || true
+        docker service create --name my-local-app -p 8080:80 ghcr.io/aditya210904/devops_proj:latest
+
+        
+
       continue-on-error: true
     
     - name: Setup Terraform
