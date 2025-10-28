@@ -50,15 +50,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Initialize Docker Swarm
-      run: |
-        docker service rm my-local-app || true
-        docker service create --name my-local-app -p 8080:80 ghcr.io/aditya210904/devops_proj:latest
-
-        
-
-      continue-on-error: true
-    
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
@@ -72,8 +63,8 @@ jobs:
     
     - name: Verify deployment
       run: |
-        echo "Waiting for services to start..."
-        Start-Sleep -Seconds 10
-        docker service ls
-        echo "Checking container status:"
-        docker ps
+        echo "Waiting for container to start..."
+        Start-Sleep -Seconds 5
+        docker ps --filter "name=my-web-app"
+        echo "Container logs:"
+        docker logs my-web-app --tail 10
