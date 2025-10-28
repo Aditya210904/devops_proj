@@ -41,8 +41,13 @@ jobs:
     runs-on: self-hosted
     needs: build-and-push
     steps:
+    - uses: actions/checkout@v3
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
     - name: Deploy with Terraform
       run: |
-        cd C:\Users\adity\OneDrive\Desktop\devops_proj\terraform
+        cd terraform
         terraform init
-        terraform apply --auto-approve
+        terraform apply -auto-approve
